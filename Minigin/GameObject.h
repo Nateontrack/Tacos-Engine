@@ -1,20 +1,18 @@
 #pragma once
 #include <memory>
+#include <vector>
 #include "Transform.h"
+#include "Component.h"
 
 namespace dae
 {
-	class Texture2D;
-
+	
 	// todo: this should become final.
-	class GameObject 
+	class GameObject final
 	{
 	public:
 		virtual void Update();
 		virtual void Render() const;
-
-		void SetTexture(const std::string& filename);
-		void SetPosition(float x, float y);
 
 		GameObject() = default;
 		virtual ~GameObject();
@@ -23,9 +21,53 @@ namespace dae
 		GameObject& operator=(const GameObject& other) = delete;
 		GameObject& operator=(GameObject&& other) = delete;
 
+		template <typename T>
+		T* AddComponent()
+		{
+			static_assert(std::is_base_of<Component, T>::value, "T must inherit from Component");
+
+			auto component = std::make_unique<T>(this);
+			auto rawComponent = component.get();
+			m_Components.push_back(std::move(component));
+			return rawComponent;
+
+		}
+		template <typename T>
+		T* GetComponent() const
+		{
+			static_assert(std::is_base_of<Component, T>::value, "T must inherit from Component");
+			for (auto& component : m_Components)
+			{
+				auto cast_component = dynamic_cast<T*>(component.get());
+				if (cast_component != nullptr) 
+				{
+					//if type is the same return the component
+					return cast_component;
+				}
+			}
+			//else return nothing
+			return nullptr;
+		}
+
+		template <typename T>
+		void RemoveComponent()
+		{
+			static_assert(std::is_base_of<Component, T>::value, "T must inherit from Component");
+			for (auto& component : m_Components)
+			{
+				if (typeid(T) == typeid(Component))
+				{
+					component.reset();
+					auto iterator = std::find(m_Components.begin(), m_Components.end(), component);
+					if (iterator != m_Components.end()) 
+					{
+						m_Components.erase(iterator);
+					}
+				}
+			}
+		}
+
 	private:
-		Transform m_transform{};
-		// todo: mmm, every gameobject has a texture? Is that correct?
-		std::shared_ptr<Texture2D> m_texture{};
+		std::vector<std::unique_ptr<Component>> m_Components;
 	};
 }

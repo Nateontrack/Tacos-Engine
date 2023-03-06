@@ -1,8 +1,31 @@
+#include "GameObject.h"
 #include "Transform.h"
+#include "RenderComponent.h"
 
-void dae::Transform::SetPosition(const float x, const float y, const float z)
+namespace dae
 {
-	m_position.x = x;
-	m_position.y = y;
-	m_position.z = z;
+	TransformComponent::TransformComponent(GameObject* pOwner)
+		:Component(pOwner),
+		m_Position{ 0,0,0 },
+		m_NeedsUpdate{true}
+	{}
+
+	void TransformComponent::Update()
+	{
+		if (m_NeedsUpdate)
+		{
+			GetOwner()->GetComponent<RenderComponent>()->SetTransform(m_Position);
+			m_NeedsUpdate = false;
+		}
+	}
+
+	void TransformComponent::SetPosition(const float x, const float y, const float z)
+	{
+		m_Position.x = x;
+		m_Position.y = y;
+		m_Position.z = z;
+		m_NeedsUpdate = true;
+	}
 }
+
+

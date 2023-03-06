@@ -4,11 +4,14 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <thread>
+#include <chrono>
 #include "Minigin.h"
 #include "InputManager.h"
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
+#include "Time.h"
 
 SDL_Window* g_window{};
 
@@ -83,12 +86,44 @@ void dae::Minigin::Run(const std::function<void()>& load)
 	auto& sceneManager = SceneManager::GetInstance();
 	auto& input = InputManager::GetInstance();
 
-	// todo: this update loop could use some work.
+	Time* time = Time::GetInstance();
+
 	bool doContinue = true;
+	//float lag = 0.0f;
+	const auto minFrameMicroseconds = std::chrono::microseconds(6944);
+	//float fixedTimeStep = time->GetFixedStep();
+	time->StartTiming();
+	
 	while (doContinue)
 	{
+		time->UpdateElapsedTime();
+		//lag += time->GetElapsedSec();
+
 		doContinue = input.ProcessInput();
+
+		//for if you need a fixed update (networking & physics)
+		//while (lag >= fixedTimeStep)
+		//{
+		//	//fixed update
+		//	lag -= fixedTimeStep;
+		//}
+
 		sceneManager.Update();
 		renderer.Render();
+
+		//for sleeping use:
+		auto endTime = std::chrono::high_resolution_clock::now();
+		auto startTime = time->GetLastTime();
+		auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
+		if ( elapsedTime < minFrameMicroseconds)
+		{
+			auto sleepTime = minFrameMicroseconds - elapsedTime;
+			std::this_thread::sleep_for(sleepTime);
+		}
+		
+		//(cpu should not be using full power)
 	}
+
+	time->DestroyInstance();
+
 }
