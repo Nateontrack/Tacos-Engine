@@ -1,7 +1,7 @@
 #include "RenderComponent.h"
 #include "Renderer.h"
 #include "Texture2D.h"
-#include "Transform.h"
+#include "GameObject.h"
 
 namespace dae
 {
@@ -13,7 +13,7 @@ namespace dae
 	{
 		if (m_pTexture != nullptr)
 		{
-			const auto& pos = m_Transform;
+			const auto& pos = GetOwner()->GetWorldPosition();
 			Renderer::GetInstance().RenderTexture(*m_pTexture, pos.x, pos.y);
 		}
 	}
@@ -21,10 +21,5 @@ namespace dae
 	void RenderComponent::SetTexture(std::shared_ptr<Texture2D> pTexture)
 	{
 		m_pTexture = pTexture;
-	}
-
-	void RenderComponent::SetTransform(const glm::vec3& transform)
-	{
-		m_Transform = transform;
 	}
 }

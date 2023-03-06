@@ -23,10 +23,9 @@ namespace dae
 		virtual void Render() const override;
 
 		void SetTexture(std::shared_ptr<Texture2D> pTexture);
-		void SetTransform(const glm::vec3& transform);
 	private:
 		std::shared_ptr<Texture2D> m_pTexture;
-		glm::vec3 m_Transform{};
+		
 	};
 }
 

@@ -1,20 +1,18 @@
 #pragma once
 #include <memory>
 #include <vector>
-#include "Transform.h"
+#include <glm/glm.hpp>
 #include "Component.h"
 
 namespace dae
 {
-	
-	// todo: this should become final.
 	class GameObject final
 	{
 	public:
 		virtual void Update();
 		virtual void Render() const;
 
-		GameObject() = default;
+		GameObject(const glm::vec3& pos);
 		virtual ~GameObject();
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
@@ -48,7 +46,6 @@ namespace dae
 			//else return nothing
 			return nullptr;
 		}
-
 		template <typename T>
 		void RemoveComponent()
 		{
@@ -67,7 +64,28 @@ namespace dae
 			}
 		}
 
+		GameObject* GetParent() const;
+		GameObject* GetChildAt(size_t idx) const;
+		int GetChildCount() const;
+		const glm::vec3& GetLocalPosition() const { return m_LocalPosition; }
+		const glm::vec3& GetWorldPosition();
+		
+		void SetParent(GameObject* pParent, bool keepWorldPosition);
+		//void SetWorldPosition(const glm::vec3& pos); //dont think this will be needed
+		void SetLocalPosition(const glm::vec3& pos);
+		void SetPositionDirty();
+
 	private:
+		void AddChild(GameObject* pChild);
+		void RemoveChild(GameObject* pChild);
+		void UpdateWorldPosition();
+
 		std::vector<std::unique_ptr<Component>> m_Components;
+		std::vector<GameObject*> m_Children{};
+		GameObject* m_Parent{};
+
+		glm::vec3 m_WorldPosition;
+		glm::vec3 m_LocalPosition;
+		bool m_PositionIsDirty;
 	};
 }
