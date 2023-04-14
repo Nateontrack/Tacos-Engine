@@ -11,22 +11,8 @@ namespace dae
 		m_RotationSpeed{3.f},
 		m_RotatesClockwise{false},
 		m_Angle{},
-		m_Center{},
-		m_HasParentFlag{},
 		m_IsRotating{true}
-	{
-		if (GetOwner()->GetParent() == nullptr)
-		{
-			m_Center = GetOwner()->GetWorldPosition();
-			m_HasParentFlag = false;
-		}
-		m_HasParentFlag = true;
-	}
-
-	bool OrbitComponent::CheckForParent() const
-	{
-		return (GetOwner()->GetParent() != nullptr);
-	}
+	{}
 
 	void OrbitComponent::Update()
 	{
@@ -41,31 +27,10 @@ namespace dae
 			{
 				m_Angle += elapsedTime * m_RotationSpeed;
 			}
-			
-			//parent functionality switching
-			if (m_HasParentFlag != CheckForParent())
-			{
-				if (m_HasParentFlag)
-				{
-					m_Center = GetOwner()->GetWorldPosition();
-					m_HasParentFlag = false;
-				}
-				else
-				{
-					m_HasParentFlag = true;
-				}
-			}
 
 			glm::vec3 rotationOffset{m_Radius * cosf(m_Angle), m_Radius * sinf(m_Angle), 0};
 
-			if (m_HasParentFlag)
-			{
-				GetOwner()->SetLocalPosition(rotationOffset);
-			}
-			else
-			{
-				GetOwner()->SetLocalPosition(m_Center + rotationOffset);
-			}
+			GetOwner()->SetLocalPosition(rotationOffset);
 		}
 	}
 }

@@ -8,6 +8,7 @@
 
 namespace dae
 {
+	//scene should have 1 gameobject that is the root of all others
 	GameObject::GameObject(const glm::vec3& pos)
 		:m_WorldPosition{ pos },
 		m_PositionIsDirty {false}
@@ -28,6 +29,11 @@ namespace dae
 		{
 			component->Update();
 		}
+
+		for (auto &child : m_Children)
+		{
+			child->Update();
+		}
 	}
 
 	void GameObject::Render() const
@@ -35,6 +41,11 @@ namespace dae
 		for (auto& component : m_Components)
 		{
 			component->Render();
+		}
+
+		for (auto& child : m_Children)
+		{
+			child->Render();
 		}
 	}
 
@@ -45,7 +56,7 @@ namespace dae
 
 	GameObject* GameObject::GetChildAt(size_t index) const
 	{
-		return m_Children[index];
+		return m_Children[index].get();
 	}
 
 	int GameObject::GetChildCount() const
@@ -69,34 +80,33 @@ namespace dae
 			SetPositionDirty();
 		}
 
+		std::unique_ptr<GameObject> child;
+
+
 		if (m_Parent)
 		{
-			//remove from previous parent
-			m_Parent->RemoveChild(this);
+			for (auto it = m_Parent->m_Children.begin(); it != m_Parent->m_Children.end(); ++it)
+			{
+				if (it->get() == this) 
+				{
+					child = std::move(*it);
+					m_Parent->m_Children.erase(it);
+					break;
+				}
+			}
 		}
-		//set new parent
+
 		m_Parent = pParent;
+
 		if (m_Parent)
 		{
-			//if has a parent add this to the children of the parent
-			m_Parent->AddChild(this);
+			if (child == nullptr)
+			{
+				child = std::unique_ptr<GameObject>(this);
+			}
+			m_Parent->m_Children.emplace_back(std::move(child));
 		}
-	}
 
-	void GameObject::AddChild(GameObject* pChild)
-	{
-		m_Children.push_back(pChild);
-	}
-
-	void GameObject::RemoveChild(GameObject* pChild)
-	{
-		pChild->SetParent(nullptr, true);
-
-		auto iterator = std::find(m_Children.begin(), m_Children.end(), pChild);
-		if (iterator != m_Children.end())
-		{
-			m_Children.erase(iterator);
-		}
 	}
 
 	void GameObject::SetLocalPosition(const glm::vec3& pos)

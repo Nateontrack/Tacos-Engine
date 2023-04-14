@@ -76,12 +76,12 @@ namespace dae
 		void SetPositionDirty();
 
 	private:
-		void AddChild(GameObject* pChild);
-		void RemoveChild(GameObject* pChild);
+		//void AddChild(GameObject* pChild);
+		//void RemoveChild(GameObject* pChild);
 		void UpdateWorldPosition();
 
 		std::vector<std::unique_ptr<Component>> m_Components;
-		std::vector<GameObject*> m_Children{};
+		std::vector<std::unique_ptr<GameObject>> m_Children{};
 		GameObject* m_Parent{};
 
 		glm::vec3 m_WorldPosition;

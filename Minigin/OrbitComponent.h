@@ -19,8 +19,6 @@ namespace dae
 		virtual void Update();
 		virtual void Render() const {};
 
-		bool CheckForParent() const;
-
 		void SetRadius(float radius) { m_Radius = radius; }
 		void SetSpeed(float speed) { m_RotationSpeed = speed; }
 		void SetRotateDirection(bool isClockwise) { m_RotatesClockwise = isClockwise; }
@@ -30,9 +28,7 @@ namespace dae
 		float m_Radius;
 		float m_RotationSpeed;
 		float m_Angle;
-		glm::vec3 m_Center;
 		bool m_RotatesClockwise;
-		bool m_HasParentFlag;
 		bool m_IsRotating;
 	};
 
