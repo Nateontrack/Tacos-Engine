@@ -1,4 +1,4 @@
-#include "Commands.h"
+#include "GameCommands.h"
 #include "GameObject.h"
 #include "Timer.h"
 #include "PlayerController.h"
@@ -10,7 +10,7 @@ void MoveCommand::Execute()
 	GameObject* object{ GetGameObject() };
 
 	glm::vec2 currentPos{object->GetLocalPosition()};
-	glm::vec2 movement{m_Direction * m_Speed * Timer::GetInstance()->GetElapsedSec()};
+	glm::vec2 movement{m_Direction* m_Speed* Timer::GetInstance()->GetElapsedSec()};
 	object->SetLocalPosition(currentPos + movement);
 }
 

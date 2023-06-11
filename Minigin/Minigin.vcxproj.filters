@@ -96,28 +96,10 @@
     <ClInclude Include="Component.h">
       <Filter>Components</Filter>
     </ClInclude>
-    <ClInclude Include="HealthComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="HealthDisplay.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="OrbitComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
     <ClInclude Include="RenderComponent.h">
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="TextComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerController.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="ScoreComponent.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="ScoreDisplay.h">
       <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
@@ -144,9 +126,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Font.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Minigin.cpp">
@@ -185,31 +164,10 @@
     <ClCompile Include="XboxController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Commands.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="HealthComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="HealthDisplay.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="OrbitComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
     <ClCompile Include="RenderComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="TextComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerController.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="ScoreComponent.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="ScoreDisplay.cpp">
       <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>

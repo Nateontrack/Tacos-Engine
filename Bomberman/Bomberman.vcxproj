@@ -151,7 +151,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AnimationComponent.cpp" />
+    <ClCompile Include="AnimationSheetComponent.cpp" />
+    <ClCompile Include="GameCommands.cpp" />
+    <ClCompile Include="HealthComponent.cpp" />
+    <ClCompile Include="HealthDisplay.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="OrbitComponent.cpp" />
+    <ClCompile Include="ParseUtils.cpp" />
+    <ClCompile Include="PlayerController.cpp" />
+    <ClCompile Include="ScoreComponent.cpp" />
+    <ClCompile Include="ScoreDisplay.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AnimationComponent.h" />
+    <ClInclude Include="AnimationSheetComponent.h" />
+    <ClInclude Include="GameCommands.h" />
+    <ClInclude Include="HealthComponent.h" />
+    <ClInclude Include="HealthDisplay.h" />
+    <ClInclude Include="OrbitComponent.h" />
+    <ClInclude Include="ParseUtils.h" />
+    <ClInclude Include="PlayerController.h" />
+    <ClInclude Include="ScoreComponent.h" />
+    <ClInclude Include="ScoreDisplay.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

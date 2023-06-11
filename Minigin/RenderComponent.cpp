@@ -22,4 +22,13 @@ namespace dae
 	{
 		m_pTexture = pTexture;
 	}
+
+	void RenderComponent::SetSource(const glm::vec2& srcPos, const float srcWidth, const float srcHeight, const float sizeFactor)
+	{
+		m_HasSource = true;
+		m_SrcPos = srcPos;
+		m_SrcWidth = srcWidth;
+		m_SrcHeight = srcHeight;
+		m_SizeFactor = sizeFactor;
+	}
 }

@@ -4,7 +4,7 @@
 #include "PlayerController.h"
 #include "InputManager.h"
 #include "XboxController.h"
-#include "Commands.h"
+#include "GameCommands.h"
 #include "ScoreComponent.h"
 #include "HealthComponent.h"
 #include "HealthDisplay.h"

@@ -1,5 +1,6 @@
 #pragma once
 #include <SDL.h>
+#include <glm/glm.hpp>
 #include <vector>
 #include <memory>
 #include "ImGuiRenderer.h"
@@ -25,7 +26,7 @@ namespace dae
 
 		void RenderTexture(const Texture2D& texture, float x, float y) const;
 		void RenderTexture(const Texture2D& texture, float x, float y, float width, float height) const;
-
+		void RenderTexture(const Texture2D& texture, const glm::vec2& dst, const glm::vec2& src, const float srcWidth, const float srcHeight, const float sizeFactor = 1.f) const;
 		
 		SDL_Renderer* GetSDLRenderer() const;
 
