@@ -1,6 +1,6 @@
 #include "OrbitComponent.h"
 #include "GameObject.h"
-#include "Time.h"
+#include "Timer.h"
 
 
 namespace dae
@@ -18,7 +18,7 @@ namespace dae
 	{
 		if (m_IsRotating)
 		{
-			float elapsedTime = Time::GetInstance()->GetElapsedSec();
+			float elapsedTime = Timer::GetInstance()->GetElapsedSec();
 			if (m_RotatesClockwise)
 			{
 				m_Angle -= elapsedTime * m_RotationSpeed;

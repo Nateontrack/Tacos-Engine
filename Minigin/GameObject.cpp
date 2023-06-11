@@ -9,9 +9,11 @@
 namespace dae
 {
 	//scene should have 1 gameobject that is the root of all others
-	GameObject::GameObject(const glm::vec3& pos)
+	GameObject::GameObject(const glm::vec2& pos)
 		:m_WorldPosition{ pos },
-		m_PositionIsDirty {false}
+		m_PositionIsDirty{ false },
+		m_DeletionMark{false},
+		m_IsActive{true}
 	{}
 
 	GameObject::~GameObject()
@@ -25,27 +27,33 @@ namespace dae
 
 	void GameObject::Update()
 	{
-		for (auto& component : m_Components) 
+		if (m_IsActive)
 		{
-			component->Update();
-		}
+			for (auto& component : m_Components)
+			{
+				component->Update();
+			}
 
-		for (auto &child : m_Children)
-		{
-			child->Update();
+			for (auto& child : m_Children)
+			{
+				child->Update();
+			}
 		}
 	}
 
 	void GameObject::Render() const
 	{
-		for (auto& component : m_Components)
+		if (m_IsActive)
 		{
-			component->Render();
-		}
+			for (auto& component : m_Components)
+			{
+				component->Render();
+			}
 
-		for (auto& child : m_Children)
-		{
-			child->Render();
+			for (auto& child : m_Children)
+			{
+				child->Render();
+			}
 		}
 	}
 
@@ -109,10 +117,18 @@ namespace dae
 
 	}
 
-	void GameObject::SetLocalPosition(const glm::vec3& pos)
+	void GameObject::SetLocalPosition(const glm::vec2& pos)
 	{
 		m_LocalPosition = pos;
 		SetPositionDirty();
+
+		if (!m_Children.empty())
+		{
+			for (const auto& child : m_Children)
+			{
+				child->SetPositionDirty();
+			}
+		}
 	}
 
 	void GameObject::SetPositionDirty()
@@ -120,7 +136,7 @@ namespace dae
 		m_PositionIsDirty = true;
 	}
 
-	const glm::vec3& GameObject::GetWorldPosition()
+	const glm::vec2& GameObject::GetWorldPosition()
 	{
 		if (m_PositionIsDirty)
 		{
@@ -145,5 +161,44 @@ namespace dae
 		}
 		m_PositionIsDirty = false;
 	}
+
+	void GameObject::MarkForDeletion()
+	{
+		m_DeletionMark = true;
+	}
+
+	bool GameObject::GetDeletionMark() const
+	{
+		return m_DeletionMark;
+	}
+
+	void GameObject::DeleteMarkedChildrenRecursive()
+	{
+		if (m_Children.empty()) return; //recursive end
+
+		for (auto& child : m_Children)
+		{
+			if (child->GetDeletionMark())
+			{
+				m_Children.erase(std::remove(m_Children.begin(), m_Children.end(), child), m_Children.end());
+			}
+			else
+			{
+				child->DeleteMarkedChildrenRecursive();
+			}
+		}
+	}
+
+	void GameObject::SetActive(bool isActive)
+	{
+		m_IsActive = isActive;
+	}
+
+	bool GameObject::GetActive()
+	{
+		return m_IsActive;
+	}
 }
+
+
 

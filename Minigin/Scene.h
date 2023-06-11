@@ -14,6 +14,7 @@ namespace dae
 
 		void Update();
 		void Render() const;
+		
 
 		~Scene();
 		Scene(const Scene& other) = delete;
@@ -23,9 +24,10 @@ namespace dae
 
 	private: 
 		explicit Scene(const std::string& name);
+		void DeleteMarkedObjects();
 
 		std::string m_name;
-		std::vector < std::shared_ptr<GameObject>> m_objects{};
+		std::vector <std::shared_ptr<GameObject>> m_objects{};
 
 		static unsigned int m_idCounter; 
 	};

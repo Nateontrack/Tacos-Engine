@@ -12,7 +12,7 @@ namespace dae
 		virtual void Update();
 		virtual void Render() const;
 
-		GameObject(const glm::vec3& pos);
+		GameObject(const glm::vec2& pos);
 		virtual ~GameObject();
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
@@ -66,26 +66,31 @@ namespace dae
 
 		GameObject* GetParent() const;
 		GameObject* GetChildAt(size_t idx) const;
+		bool GetDeletionMark() const;
 		int GetChildCount() const;
-		const glm::vec3& GetLocalPosition() const { return m_LocalPosition; }
-		const glm::vec3& GetWorldPosition();
+		const glm::vec2& GetLocalPosition() const { return m_LocalPosition; }
+		const glm::vec2& GetWorldPosition();
+		bool GetActive();
+		
 		
 		void SetParent(GameObject* pParent, bool keepWorldPosition);
-		//void SetWorldPosition(const glm::vec3& pos); //dont think this will be needed
-		void SetLocalPosition(const glm::vec3& pos);
+		void MarkForDeletion();
+		void DeleteMarkedChildrenRecursive();
+		void SetLocalPosition(const glm::vec2& pos);
 		void SetPositionDirty();
+		void SetActive(bool isActive);
 
 	private:
-		//void AddChild(GameObject* pChild);
-		//void RemoveChild(GameObject* pChild);
 		void UpdateWorldPosition();
 
 		std::vector<std::unique_ptr<Component>> m_Components;
 		std::vector<std::unique_ptr<GameObject>> m_Children{};
 		GameObject* m_Parent{};
 
-		glm::vec3 m_WorldPosition;
-		glm::vec3 m_LocalPosition;
+		glm::vec2 m_WorldPosition;
+		glm::vec2 m_LocalPosition;
 		bool m_PositionIsDirty;
+		bool m_DeletionMark;
+		bool m_IsActive;
 	};
 }

@@ -1,13 +1,13 @@
-#include "Time.h"
+#include "Timer.h"
 
 namespace dae
 {
-    Time* Time::GetInstance()
+    Timer* Timer::GetInstance()
     {
         if (!m_Instance)
         {
             //dont use make ptr because singleton constructors are private
-            m_Instance = std::unique_ptr<Time>{ new Time{} };
+            m_Instance = std::unique_ptr<Timer>{ new Timer{} };
             ++m_InstanceCount;
         }
 
@@ -15,19 +15,19 @@ namespace dae
         return m_Instance.get();
     }
 
-    void Time::DestroyInstance()
+    void Timer::DestroyInstance()
     {
         m_Instance.reset();
     }
 
-    int Time::GetInstanceCount()
+    int Timer::GetInstanceCount()
     {
         return m_InstanceCount;
     }
 
     
 
-    void Time::UpdateElapsedTime()
+    void Timer::UpdateElapsedTime()
     {
         auto currentTime = std::chrono::high_resolution_clock::now();
         std::chrono::duration<float> elapsedTime = currentTime - m_LastTime;
@@ -36,22 +36,22 @@ namespace dae
         m_LastTime = currentTime;
     }
 
-    float Time::GetElapsedSec() const
+    float Timer::GetElapsedSec() const
     {
         return m_ElapsedSec;
     }
 
-    float Time::GetFixedStep() const
+    float Timer::GetFixedStep() const
     {
         return m_FixedStep;
     }
 
-    std::chrono::time_point<std::chrono::steady_clock> Time::GetLastTime() const
+    std::chrono::time_point<std::chrono::steady_clock> Timer::GetLastTime() const
     {
         return m_LastTime;
     }
 
-    void Time::StartTiming()
+    void Timer::StartTiming()
     {
         m_LastTime = std::chrono::high_resolution_clock::now();
     }

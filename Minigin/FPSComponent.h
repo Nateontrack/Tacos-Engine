@@ -2,7 +2,7 @@
 #include <cmath>
 #include "Component.h"
 #include "TextComponent.h"
-#include "Time.h"
+#include "Timer.h"
 
 
 namespace dae
@@ -23,7 +23,7 @@ namespace dae
 
 		virtual void Update() override
 		{
-			float FPS = 1 / Time::GetInstance()->GetElapsedSec();
+			float FPS = 1 / Timer::GetInstance()->GetElapsedSec();
 			m_CurrentFPS = static_cast<int>(round(FPS));
 
 			std::string strFPS{ "FPS: " };

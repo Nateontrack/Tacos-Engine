@@ -5,10 +5,10 @@
 
 namespace dae 
 {
-    class Time final {
+    class Timer final {
     public:
 
-        static Time* GetInstance();
+        static Timer* GetInstance();
         static void DestroyInstance();
         static int GetInstanceCount();
 
@@ -20,19 +20,19 @@ namespace dae
 
         // To keep the Singleton destructor protected the deleter that the unique_ptr uses,
         // has to be a friend class, to make it have access to the protected and private members
-        friend struct std::default_delete<Time>;
+        friend struct std::default_delete<Timer>;
 
     protected:
-        ~Time() = default;
+        ~Timer() = default;
 
     private:
-        Time() = default;
-        Time(const Time&) = delete;
-        Time(Time&&) = delete;
-        Time& operator=(const Time&) = delete;
-        Time& operator=(Time&&) = delete;
+        Timer() = default;
+        Timer(const Timer&) = delete;
+        Timer(Timer&&) = delete;
+        Timer& operator=(const Timer&) = delete;
+        Timer& operator=(Timer&&) = delete;
 
-        inline static std::unique_ptr<Time> m_Instance{ nullptr };
+        inline static std::unique_ptr<Timer> m_Instance{ nullptr };
         inline static int m_InstanceCount{ 0 };
 
         float m_ElapsedSec{};

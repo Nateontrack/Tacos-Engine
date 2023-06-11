@@ -30,6 +30,8 @@ void Scene::Update()
 	{
 		object->Update();
 	}
+
+	DeleteMarkedObjects();
 }
 
 void Scene::Render() const
@@ -38,5 +40,19 @@ void Scene::Render() const
 	{
 		object->Render();
 	}
-}
 
+}
+void Scene::DeleteMarkedObjects()
+{
+	for (auto& object : m_objects)
+	{
+		if (object->GetDeletionMark())
+		{
+			Remove(object);
+		}
+		else
+		{
+			object->DeleteMarkedChildrenRecursive();
+		}
+	}
+}

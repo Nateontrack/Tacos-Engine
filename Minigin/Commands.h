@@ -1,7 +1,11 @@
 #pragma once
-#include "GameObject.h"
+#include <glm/glm.hpp>
+
+
 namespace dae
 {
+	class GameObject;
+
 	class Command
 	{
 	public:
@@ -15,6 +19,8 @@ namespace dae
 		GameActorCommand(GameObject* GameObject)
 			:m_GameObject{GameObject}
 		{}
+
+		virtual ~GameActorCommand() = default;
 	protected:
 		GameObject* GetGameObject() const
 		{
@@ -24,15 +30,42 @@ namespace dae
 		GameObject* m_GameObject;
 	};
 
-	class Move final : public GameActorCommand
+	class MoveCommand final : public GameActorCommand
 	{
 	public:
-		void Execute() override
-		{ GetGameObject(); }
+		MoveCommand(GameObject* GameObject, const glm::vec2& direction, float speed)
+			:GameActorCommand(GameObject),
+			m_Direction{direction},
+			m_Speed{speed}
+		{}
+
+		virtual ~MoveCommand() = default;
+
+		void Execute() override;
+		
 	private:
 		float m_Speed;
-		//float m_Acceleration;
-		
+		glm::vec2 m_Direction;
+	};
+
+	class DamageCommand final : public GameActorCommand
+	{
+	public:
+		DamageCommand(GameObject* GameObject)
+			:GameActorCommand(GameObject)
+		{}
+
+		void Execute() override;
+	};
+
+	class ScoreCommand final : public GameActorCommand
+	{
+	public:
+		ScoreCommand(GameObject* GameObject)
+			:GameActorCommand(GameObject)
+		{}
+
+		void Execute() override;
 	};
 }
 
