@@ -141,5 +141,8 @@ bool InputManager::AddControllers(unsigned nrControllers)
 
 void InputManager::SetActivityController(bool active, unsigned int controllerIdx)
 {
-	m_Controllers[controllerIdx]->SetActive(active);
+	if (XBox360Controller::IsConnected(controllerIdx))
+	{
+		m_Controllers[controllerIdx]->SetActive(active);
+	}
 }
