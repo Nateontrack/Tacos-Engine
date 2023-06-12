@@ -9,6 +9,9 @@
 #include "HealthComponent.h"
 #include "HealthDisplay.h"
 #include "ScoreDisplay.h"
+#include "BombComponent.h"
+#include "RenderComponent.h"
+#include "ResourceManager.h"
 
 #include "Timer.h"
 
@@ -22,7 +25,10 @@ PlayerController::PlayerController(GameObject* pOwner)
 	m_MaxInstanceCount{ 4 },
 	m_Speed{200.f},
 	m_DeathTimer{0.f},
-	m_State{PlayerState::idle}
+	m_State{PlayerState::idle},
+	m_BombCooldown{4.f},
+	m_OnCooldownBomb{false},
+	m_BombTimer{0.f}
 {
 	// Increment the instance count when a new PlayerController is created
 	++s_InstanceCount;
@@ -42,9 +48,7 @@ PlayerController::PlayerController(GameObject* pOwner)
 	m_AnimationSheet = std::make_unique<AnimationSheetComponent>(pOwner);
 	m_AnimationSheet->CreateAnimationsFromFile("../Data/LoadingData/PlayerAnimations.xml");
 
-	m_StateChanged = std::make_unique<Subject<int>>();
-	m_StateChanged->AddObserver(dynamic_cast<Observer<int>*>(m_AnimationSheet.get()));
-	m_StateChanged->Notify(static_cast<int>(m_State));
+	m_AnimationSheet->SetAnimKey(static_cast<int>(m_State));
 }
 
 void PlayerController::SetState(PlayerState state)
@@ -52,7 +56,7 @@ void PlayerController::SetState(PlayerState state)
 	if ((state == PlayerState::die) && (m_State != PlayerState::die))
 	{
 		m_State = state;
-		m_StateChanged->Notify(static_cast<int>(m_State));
+		m_AnimationSheet->SetAnimKey(static_cast<int>(m_State));
 	}
 }
 
@@ -64,11 +68,21 @@ void PlayerController::Die()
 	}
 }
 
-void PlayerController::ScorePoints()
+void PlayerController::PlaceBomb()
 {
-	if (GetOwner()->GetActive())
+	if (GetOwner()->GetActive() && !m_OnCooldownBomb)
 	{
-		m_ScoreComp->GainScore();
+		m_OnCooldownBomb = true;
+		auto bomb = new GameObject(GetOwner()->GetWorldPosition());
+		bomb->AddComponent<RenderComponent>();
+		bomb->AddComponent<BombComponent>();
+		bomb->GetComponent<RenderComponent>()->SetTexture(ResourceManager::GetInstance().LoadTexture("Sprites/Bomberman_sheet.png"));
+
+		auto scoreComp = dynamic_cast<Observer<>*>(m_ScoreComp.get());
+		bomb->GetComponent<BombComponent>()->SetObserver(scoreComp);
+
+		bomb->SetParent(GetOwner()->GetParent(), true);
+		
 	}
 }
 
@@ -86,6 +100,17 @@ void PlayerController::SetObserver(Observer<int>* hud)
 
 void PlayerController::Update()
 {
+	if (m_OnCooldownBomb)
+	{
+		m_BombTimer += Timer::GetInstance()->GetElapsedSec();
+		if (m_BombTimer > m_BombCooldown)
+		{
+			m_OnCooldownBomb = false;
+			m_BombTimer = 0.f;
+		}
+	}
+
+
 	switch (m_State)
 	{
 	case dae::PlayerController::PlayerState::idle:
@@ -140,7 +165,7 @@ void PlayerController::MovementState()
 		if (nextState != m_State)
 		{
 			m_State = nextState;
-			m_StateChanged->Notify(static_cast<int>(m_State));
+			m_AnimationSheet->SetAnimKey(static_cast<int>(m_State));
 		}
 	}
 
@@ -157,7 +182,7 @@ void PlayerController::DieState()
 		Die();
 		m_DeathTimer = 0.f;
 		m_State = PlayerState::moveLeft;
-		m_StateChanged->Notify(static_cast<int>(m_State));
+		m_AnimationSheet->SetAnimKey(static_cast<int>(m_State));
 	}
 }
 
@@ -175,7 +200,7 @@ void PlayerController::InitCommands()
 	std::unique_ptr<dae::Command> moveRight = std::make_unique<dae::MoveCommand>(owner, glm::vec2{1, 0}, m_Speed);
 	std::unique_ptr<dae::Command> moveLeft = std::make_unique<dae::MoveCommand>(owner, glm::vec2{-1, 0}, m_Speed);
 	std::unique_ptr<dae::Command> takeDamage = std::make_unique<dae::DamageCommand>(owner);
-	std::unique_ptr<dae::Command> score = std::make_unique<dae::ScoreCommand>(owner);
+	std::unique_ptr<dae::Command> score = std::make_unique<dae::BombCommand>(owner);
 
 	using Button = XBox360Controller::ControllerButton;
 	using ButtonType = InputManager::InputType;
@@ -205,7 +230,7 @@ void PlayerController::SetKeyboard()
 	std::unique_ptr<dae::Command> moveRight = std::make_unique<dae::MoveCommand>(owner, glm::vec2{1, 0}, m_Speed);
 	std::unique_ptr<dae::Command> moveLeft = std::make_unique<dae::MoveCommand>(owner, glm::vec2{-1, 0}, m_Speed);
 	std::unique_ptr<dae::Command> takeDamage = std::make_unique<dae::DamageCommand>(owner);
-	std::unique_ptr<dae::Command> score = std::make_unique<dae::ScoreCommand>(owner);
+	std::unique_ptr<dae::Command> score = std::make_unique<dae::BombCommand>(owner);
 
 	using ButtonType = InputManager::InputType;
 
@@ -217,4 +242,9 @@ void PlayerController::SetKeyboard()
 	InputManager::GetInstance().AddCommandKeyboard(std::move(score), SDL_SCANCODE_SPACE, ButtonType::onRelease);
 
 	InputManager::GetInstance().SetActivityController(false, m_PlayerIndex);
+}
+
+int PlayerController::GetState() const
+{
+	return static_cast<int>(m_State);
 }

@@ -42,15 +42,15 @@ void load()
 	{
 
 	}
-	/*auto go = std::make_shared<dae::GameObject>(glm::vec3{});
+	auto go = std::make_shared<dae::GameObject>(glm::vec3{});
 	auto renderComp = go->AddComponent<RenderComponent>();
 	renderComp->SetTexture(ResourceManager::GetInstance().LoadTexture("Sprites/Level_Base.png"));
 	
-	scene.Add(go);*/
+	scene.Add(go);
 
 	
 
-	auto go = std::make_shared<dae::GameObject>(glm::vec3{5, 5, 0});
+	go = std::make_shared<dae::GameObject>(glm::vec3{33, 33, 0});
 
 	go->AddComponent<FPSComponent>();
 	go->AddComponent<TextComponent>();
@@ -68,7 +68,7 @@ void load()
 	auto healthDisplay = std::make_shared<dae::GameObject>(glm::vec3{0, 0, 0});
 	healthDisplay->AddComponent<HealthDisplay>();
 	healthDisplay->AddComponent<RenderComponent>();
-	healthDisplay->SetLocalPosition(glm::vec2{0, 100});
+	healthDisplay->SetLocalPosition(glm::vec2{33, 66});
 	healthDisplay->GetComponent<HealthDisplay>()->SetDisplayString("Health P1: ");
 	scene.Add(healthDisplay);
 
@@ -76,7 +76,7 @@ void load()
 	scoreDisplay->AddComponent<ScoreDisplay>();
 	scoreDisplay->AddComponent<RenderComponent>();
 	scoreDisplay->GetComponent<ScoreDisplay>()->SetDisplayString("Score P1: ");
-	scoreDisplay->SetLocalPosition(glm::vec2{0, 200});
+	scoreDisplay->SetLocalPosition(glm::vec2{33, 100});
 	scene.Add(scoreDisplay);
 
 	Observer<int>* healthHUD = dynamic_cast<Observer<int>*>(healthDisplay->GetComponent<HealthDisplay>());

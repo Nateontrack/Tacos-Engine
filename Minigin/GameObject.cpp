@@ -83,7 +83,7 @@ namespace dae
 		{
 			if (keepWorldPosition)
 			{
-				SetLocalPosition(GetLocalPosition() - pParent->GetWorldPosition());
+				SetLocalPosition(GetWorldPosition() - pParent->GetWorldPosition());
 			}
 			SetPositionDirty();
 		}

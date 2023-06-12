@@ -17,7 +17,7 @@ void DamageCommand::Execute()
 	GetGameObject()->GetComponent<PlayerController>()->SetState(PlayerController::PlayerState::die);
 }
 
-void ScoreCommand::Execute()
+void BombCommand::Execute()
 {
-	GetGameObject()->GetComponent<PlayerController>()->ScorePoints();
+	GetGameObject()->GetComponent<PlayerController>()->PlaceBomb();
 }

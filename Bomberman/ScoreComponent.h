@@ -8,7 +8,7 @@ namespace dae
 	class GameObject;
 
 
-	class ScoreComponent final : public Component
+	class ScoreComponent final : public Component, public Observer<>
 	{
 	public:
 		ScoreComponent(GameObject* pOwner, int playerIndex);
@@ -23,14 +23,17 @@ namespace dae
 		virtual void Update() override;
 		virtual void Render() const override {}
 
-		void Init();
 		void Reset();
-		void GainScore();
+		virtual void OnNotify() override {}
+		virtual void OnSubjectDestroy() override;
+		
 		void SetObserver(Observer<int>* hud);
 		
 		int GetScore() const;
 
 	private:
+		void GainScore();
+
 		int m_Increment;
 		int m_CurrentScore;
 		int m_PlayerIndex;

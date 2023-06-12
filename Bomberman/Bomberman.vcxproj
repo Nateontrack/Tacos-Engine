@@ -167,6 +167,7 @@
   <ItemGroup>
     <ClCompile Include="AnimationComponent.cpp" />
     <ClCompile Include="AnimationSheetComponent.cpp" />
+    <ClCompile Include="BombComponent.cpp" />
     <ClCompile Include="GameCommands.cpp" />
     <ClCompile Include="HealthComponent.cpp" />
     <ClCompile Include="HealthDisplay.cpp" />
@@ -180,6 +181,7 @@
   <ItemGroup>
     <ClInclude Include="AnimationComponent.h" />
     <ClInclude Include="AnimationSheetComponent.h" />
+    <ClInclude Include="BombComponent.h" />
     <ClInclude Include="GameCommands.h" />
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="HealthDisplay.h" />

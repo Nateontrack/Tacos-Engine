@@ -42,8 +42,8 @@ void ScoreComponent::SetObserver(Observer<int>* hud)
 	m_ScorePoints.Notify(0);
 }
 
-void ScoreComponent::Init()
+void ScoreComponent::OnSubjectDestroy()
 {
-
+	GainScore();
 }
 

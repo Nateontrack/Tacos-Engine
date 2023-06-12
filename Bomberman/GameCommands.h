@@ -31,10 +31,10 @@ namespace dae
 		void Execute() override;
 	};
 
-	class ScoreCommand final : public GameActorCommand
+	class BombCommand final : public GameActorCommand
 	{
 	public:
-		ScoreCommand(GameObject* GameObject)
+		BombCommand(GameObject* GameObject)
 			:GameActorCommand(GameObject)
 		{}
 

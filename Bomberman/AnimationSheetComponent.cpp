@@ -24,12 +24,6 @@ namespace dae
 		m_Animations.at(m_CurrentAnimKey)->Update();
 	}
 
-	void AnimationSheetComponent::OnNotify(int animKey)
-	{
-		m_Animations.at(m_CurrentAnimKey)->Reset();
-		m_CurrentAnimKey = animKey;
-	}
-
 	Texture2D* AnimationSheetComponent::GetTexture() const
 	{
 		return m_Texture.get();
@@ -120,5 +114,14 @@ namespace dae
 	void AnimationSheetComponent::SetPaused(bool paused)
 	{
 		m_Animations.at(m_CurrentAnimKey)->SetPaused(paused);
+	}
+
+	void AnimationSheetComponent::SetAnimKey(int animKey)
+	{
+		if (animKey != m_CurrentAnimKey)
+		{
+			m_Animations.at(m_CurrentAnimKey)->Reset();
+			m_CurrentAnimKey = animKey;
+		}
 	}
 }

@@ -5,8 +5,8 @@
 
 namespace dae
 {
-	class ScoreComponent;
 	class HealthComponent;
+	class ScoreComponent;
 
 	class PlayerController final : public Component
 	{
@@ -33,10 +33,12 @@ namespace dae
 		PlayerController& operator=(const PlayerController& other) = delete;
 		PlayerController& operator=(PlayerController&& other) = delete;
 
-		void ScorePoints();
+		void PlaceBomb();
 		void SetObserver(Observer<int>* hud);
 		void SetKeyboard();
 		void SetState(PlayerState state);
+
+		int GetState() const;
 
 		void AddMovement(const glm::vec2& movement);
 
@@ -53,6 +55,9 @@ namespace dae
 		int m_PlayerIndex;
 		PlayerState m_State;
 		float m_DeathTimer;
+		float m_BombTimer;
+		const float m_BombCooldown;
+		bool m_OnCooldownBomb;
 
 		glm::vec2 m_CurrentMovement;
 
@@ -61,7 +66,6 @@ namespace dae
 		std::unique_ptr<ScoreComponent> m_ScoreComp;
 		std::unique_ptr<HealthComponent> m_HealthComp;
 		std::unique_ptr<AnimationSheetComponent> m_AnimationSheet;
-		std::unique_ptr<Subject<int>> m_StateChanged;
 	};
 }
 

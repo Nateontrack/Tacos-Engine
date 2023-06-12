@@ -84,6 +84,7 @@ void AnimationComponent::Reset()
 {
 	m_CurrentFrame = 0;
 	m_AccumulatedTime = 0;
+	m_CurrentPos.x = m_FirstPos.x;
 	m_Paused = false;
 }
 

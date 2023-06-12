@@ -9,14 +9,13 @@ namespace dae
 {
 	class Texture2D;
 
-	class AnimationSheetComponent final : public Component, public Observer<int>
+	class AnimationSheetComponent final : public Component
 	{
 	public:
 		AnimationSheetComponent(GameObject* pOwner);
 		virtual void Update() override;
 		virtual void Render() const override {};
-		virtual void OnNotify(int animKey) override;
-		virtual void OnSubjectDestroy() override {};
+		
 
 		Texture2D* GetTexture() const;
 
@@ -24,6 +23,7 @@ namespace dae
 
 		float GetAnimationTime(int animKey);
 		void SetPaused(bool paused);
+		void SetAnimKey(int animKey);
 
 		AnimationSheetComponent(const AnimationSheetComponent& other) = delete;
 		AnimationSheetComponent(AnimationSheetComponent&& other) = delete;
