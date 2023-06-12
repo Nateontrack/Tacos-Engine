@@ -23,7 +23,7 @@
 		<isRepeating>0</isRepeating>
 		<repeatFrame>0</repeatFrame>
 		<sizeFactor>2</sizeFactor>
-		<frameTime>0.20</frameTime>
+		<frameTime>0.125</frameTime>
 	</Animation>
 
 </Spritesheet>
