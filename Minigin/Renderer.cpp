@@ -95,8 +95,8 @@ void dae::Renderer::RenderTexture(const Texture2D& texture, const float x, const
 void dae::Renderer::RenderTexture(const Texture2D& texture, const glm::vec2& dst, const glm::vec2& src, const float srcWidth, const float srcHeight, const float sizeFactor) const
 {
 	SDL_Rect dstRect{};
-	dstRect.x = static_cast<int>(dst.x);
-	dstRect.y = static_cast<int>(dst.y);
+	dstRect.x = static_cast<int>(dst.x - (srcWidth * sizeFactor) / 2);
+	dstRect.y = static_cast<int>(dst.y - (srcWidth * sizeFactor) / 2);
 	dstRect.w = static_cast<int>(srcWidth * sizeFactor);
 	dstRect.h = static_cast<int>(srcHeight * sizeFactor);
 
