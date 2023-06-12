@@ -2,7 +2,6 @@
 #include <iostream>
 #include <fstream>
 #include "AnimationSheetComponent.h"
-#include "AnimationComponent.h"
 #include "TextComponent.h"
 #include "Renderer.h"
 #include "RenderComponent.h"
@@ -18,9 +17,7 @@ namespace dae
 
 	AnimationSheetComponent::AnimationSheetComponent(GameObject* pOwner)
 		:Component(pOwner)
-	{
-
-	}
+	{}
 
 	void AnimationSheetComponent::Update()
 	{
@@ -106,8 +103,7 @@ namespace dae
 
 		if (GetAttributeValue("frameTime", animationData) == "default")
 		{
-
-			m_Animations.insert(std::make_pair(id, std::move(std::make_unique<AnimationComponent>( GetOwner(), firstPos, nrFrames, width, height, sizeFactor, isRepeating, repeatFrame))));
+			m_Animations.insert(std::make_pair(id, std::move(std::make_unique<AnimationComponent>(GetOwner(), firstPos, nrFrames, width, height, sizeFactor, isRepeating, repeatFrame))));
 		}
 		else
 		{
@@ -116,4 +112,13 @@ namespace dae
 		}
 	}
 
+	float AnimationSheetComponent::GetAnimationTime(int animKey)
+	{
+		return m_Animations.at(animKey)->GetAnimTime();
+	}
+
+	void AnimationSheetComponent::SetPaused(bool paused)
+	{
+		m_Animations.at(m_CurrentAnimKey)->SetPaused(paused);
+	}
 }

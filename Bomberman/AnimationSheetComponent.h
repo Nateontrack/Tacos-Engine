@@ -3,13 +3,13 @@
 #include <string>
 #include "component.h"
 #include "Observer.h"
+#include "AnimationComponent.h"
 
 namespace dae
 {
 	class Texture2D;
-	class AnimationComponent;
 
-	class AnimationSheetComponent final : public Component, Observer<int>
+	class AnimationSheetComponent final : public Component, public Observer<int>
 	{
 	public:
 		AnimationSheetComponent(GameObject* pOwner);
@@ -22,6 +22,8 @@ namespace dae
 
 		void CreateAnimationsFromFile(const std::string& filePath);
 
+		float GetAnimationTime(int animKey);
+		void SetPaused(bool paused);
 
 		AnimationSheetComponent(const AnimationSheetComponent& other) = delete;
 		AnimationSheetComponent(AnimationSheetComponent&& other) = delete;

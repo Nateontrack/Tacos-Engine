@@ -42,19 +42,15 @@ void load()
 	{
 
 	}
-	auto go = std::make_shared<dae::GameObject>(glm::vec3{});
+	/*auto go = std::make_shared<dae::GameObject>(glm::vec3{});
 	auto renderComp = go->AddComponent<RenderComponent>();
-	renderComp->SetTexture(ResourceManager::GetInstance().LoadTexture("background.tga"));
-	//go->SetTexture("background.tga");
-	scene.Add(go);
+	renderComp->SetTexture(ResourceManager::GetInstance().LoadTexture("Sprites/Level_Base.png"));
+	
+	scene.Add(go);*/
 
-	go = std::make_shared<dae::GameObject>(glm::vec3{ 216, 180, 0 });
-	go->AddComponent<RenderComponent>();
-	go->GetComponent<RenderComponent>()->SetTexture(ResourceManager::GetInstance().LoadTexture("logo.tga"));
+	
 
-	scene.Add(go);
-
-	go = std::make_shared<dae::GameObject>(glm::vec3{5, 5, 0});
+	auto go = std::make_shared<dae::GameObject>(glm::vec3{5, 5, 0});
 
 	go->AddComponent<FPSComponent>();
 	go->AddComponent<TextComponent>();
@@ -67,7 +63,6 @@ void load()
 
 	auto bob = new GameObject(glm::vec3{ 0, 0, 0 });
 	bob->AddComponent<RenderComponent>();
-
 	bob->AddComponent<PlayerController>();
 
 	auto healthDisplay = std::make_shared<dae::GameObject>(glm::vec3{0, 0, 0});
@@ -92,40 +87,12 @@ void load()
 	//bob->GetComponent<HealthComponent>()->SetMaxHealth(5);
 
 
-	bob->GetComponent<RenderComponent>()->SetTexture(ResourceManager::GetInstance().LoadTexture("Bob.png"));
+	bob->GetComponent<RenderComponent>()->SetTexture(ResourceManager::GetInstance().LoadTexture("Sprites/Bomberman_sheet.png"));
 
 
-	bob->SetParent(go.get(), true);
+	bob->SetParent(go.get(), false);
 
-	auto bub = new GameObject(glm::vec3{ 0, 0, 0 });
-	bub->AddComponent<RenderComponent>();
-	bub->AddComponent<PlayerController>();
-
-
-	bub->GetComponent<RenderComponent>()->SetTexture(ResourceManager::GetInstance().LoadTexture("Bub.png"));
-	//bub->SetParent(bob, true);
-	bub->SetParent(go.get(), true);
-
-	auto healthDisplayP2 = std::make_shared<dae::GameObject>(glm::vec3{0, 0, 0});
-	healthDisplayP2->AddComponent<HealthDisplay>();
-	healthDisplayP2->AddComponent<RenderComponent>();
-	healthDisplayP2->SetLocalPosition(glm::vec2{0, 300});
-	healthDisplayP2->GetComponent<HealthDisplay>()->SetDisplayString("Health P2: ");
-	scene.Add(healthDisplayP2);
-
-	auto scoreDisplayP2 = std::make_shared<dae::GameObject>(glm::vec3{0, 0, 0});
-	scoreDisplayP2->AddComponent<ScoreDisplay>();
-	scoreDisplayP2->AddComponent<RenderComponent>();
-	scoreDisplayP2->GetComponent<ScoreDisplay>()->SetDisplayString("Score P2: ");
-	scoreDisplayP2->SetLocalPosition(glm::vec2{0, 400});
-	scene.Add(scoreDisplayP2);
-
-	Observer<int>* healthHUDP2 = dynamic_cast<Observer<int>*>(healthDisplayP2->GetComponent<HealthDisplay>());
-	Observer<int>* scoreHUDP2 = dynamic_cast<Observer<int>*>(scoreDisplayP2->GetComponent<ScoreDisplay>());
-
-	bub->GetComponent<PlayerController>()->SetObserver(healthHUDP2);
-	bub->GetComponent<PlayerController>()->SetObserver(scoreHUDP2);
-	bub->GetComponent<PlayerController>()->SetKeyboard();
+	
 }
 
 int main(int, char* []) {

@@ -7,16 +7,14 @@ using namespace dae;
 
 void MoveCommand::Execute()
 {
-	GameObject* object{ GetGameObject() };
-
-	glm::vec2 currentPos{object->GetLocalPosition()};
 	glm::vec2 movement{m_Direction* m_Speed* Timer::GetInstance()->GetElapsedSec()};
-	object->SetLocalPosition(currentPos + movement);
+	
+	GetGameObject()->GetComponent<PlayerController>()->AddMovement(movement);
 }
 
 void DamageCommand::Execute()
 {
-	GetGameObject()->GetComponent<PlayerController>()->Die();
+	GetGameObject()->GetComponent<PlayerController>()->SetState(PlayerController::PlayerState::die);
 }
 
 void ScoreCommand::Execute()

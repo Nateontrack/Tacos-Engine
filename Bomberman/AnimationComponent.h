@@ -17,6 +17,8 @@ namespace dae
 		virtual void Render() const override {};
 
 		void Reset();
+		void SetPaused(bool pause);
+		float GetAnimTime();
 
 		AnimationComponent(const AnimationComponent& other) = delete;
 		AnimationComponent(AnimationComponent&& other) = delete;
@@ -37,6 +39,7 @@ namespace dae
 
 		float m_AccumulatedTime;
 		int m_CurrentFrame;
+		bool m_Paused;
 
 		RenderComponent* m_RenderComponent;
 	};

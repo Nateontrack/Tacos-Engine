@@ -17,7 +17,8 @@ AnimationComponent::AnimationComponent(GameObject* pOwner, const glm::vec2& firs
 	m_FrameTime{ 0.083333f },
 	m_CurrentFrame{ 0 },
 	m_AccumulatedTime{},
-	m_SizeFactor{ sizeFactor }
+	m_SizeFactor{ sizeFactor },
+	m_Paused{false}
 {
 	m_CurrentPos.x = m_FirstPos.x;
 	m_CurrentPos.y = m_FirstPos.y;
@@ -35,7 +36,8 @@ AnimationComponent::AnimationComponent(GameObject* pOwner, const glm::vec2& firs
 	m_FrameTime{ frameTime },
 	m_CurrentFrame{ 0 },
 	m_AccumulatedTime{},
-	m_SizeFactor{sizeFactor}
+	m_SizeFactor{sizeFactor},
+	m_Paused{ false }
 {
 	m_CurrentPos.x = m_FirstPos.x;
 	m_CurrentPos.y = m_FirstPos.y;
@@ -44,33 +46,48 @@ AnimationComponent::AnimationComponent(GameObject* pOwner, const glm::vec2& firs
 
 void AnimationComponent::Update()
 {
-	m_AccumulatedTime += Timer::GetInstance()->GetElapsedSec();
-	if (m_AccumulatedTime > m_FrameTime)
+	if (!m_Paused)
 	{
-		m_CurrentFrame++;
-		m_AccumulatedTime -= m_FrameTime;
-
-		if (m_IsRepeating)
+		m_AccumulatedTime += Timer::GetInstance()->GetElapsedSec();
+		if (m_AccumulatedTime > m_FrameTime)
 		{
-			if (m_CurrentFrame >= m_RepeatFrame)
+			m_CurrentFrame++;
+			m_AccumulatedTime -= m_FrameTime;
+
+			if (m_IsRepeating)
 			{
-				m_CurrentFrame %= m_NrFrames - m_RepeatFrame;
-				m_CurrentFrame += m_RepeatFrame;
+				if (m_CurrentFrame >= m_RepeatFrame)
+				{
+					m_CurrentFrame %= m_NrFrames - m_RepeatFrame;
+					m_CurrentFrame += m_RepeatFrame;
+				}
+
+			}
+			else if (m_CurrentFrame == m_NrFrames)
+			{
+				m_CurrentFrame--;
 			}
 
+			m_CurrentPos.x = m_FirstPos.x + m_FrameWidth * m_CurrentFrame;
+			
 		}
-		else if (m_CurrentFrame == m_NrFrames)
-		{
-			m_CurrentFrame--;
-		}
-
-		m_CurrentPos.x = m_FirstPos.x + m_FrameWidth * m_CurrentFrame;
-		m_RenderComponent->SetSource(m_CurrentPos, m_FrameWidth, m_FrameHeight, m_SizeFactor);
 	}
+	m_RenderComponent->SetSource(m_CurrentPos, m_FrameWidth, m_FrameHeight, m_SizeFactor);
+}
+
+void AnimationComponent::SetPaused(bool paused)
+{
+	m_Paused = paused;
 }
 
 void AnimationComponent::Reset()
 {
 	m_CurrentFrame = 0;
 	m_AccumulatedTime = 0;
+	m_Paused = false;
+}
+
+float AnimationComponent::GetAnimTime()
+{
+	return m_FrameTime * m_NrFrames;
 }

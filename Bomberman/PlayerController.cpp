@@ -10,6 +10,8 @@
 #include "HealthDisplay.h"
 #include "ScoreDisplay.h"
 
+#include "Timer.h"
+
 
 using namespace dae;
 
@@ -18,7 +20,9 @@ int PlayerController::s_InstanceCount = 0;
 PlayerController::PlayerController(GameObject* pOwner)
 	: Component(pOwner),
 	m_MaxInstanceCount{ 4 },
-	m_Speed{200.f}
+	m_Speed{200.f},
+	m_DeathTimer{0.f},
+	m_State{PlayerState::idle}
 {
 	// Increment the instance count when a new PlayerController is created
 	++s_InstanceCount;
@@ -30,14 +34,26 @@ PlayerController::PlayerController(GameObject* pOwner)
 		// Throw an exception or handle the error as per your requirements
 		throw std::runtime_error("Only four instances of PlayerController are allowed.");
 	}
-	Init();
+	InitCommands();
+
+
+	m_ScoreComp = std::make_unique<ScoreComponent>(pOwner, m_PlayerIndex);
+	m_HealthComp = std::make_unique<HealthComponent>(pOwner);
+	m_AnimationSheet = std::make_unique<AnimationSheetComponent>(pOwner);
+	m_AnimationSheet->CreateAnimationsFromFile("../Data/LoadingData/PlayerAnimations.xml");
+
+	m_StateChanged = std::make_unique<Subject<int>>();
+	m_StateChanged->AddObserver(dynamic_cast<Observer<int>*>(m_AnimationSheet.get()));
+	m_StateChanged->Notify(static_cast<int>(m_State));
 }
 
-
-
-PlayerController::~PlayerController()
+void PlayerController::SetState(PlayerState state)
 {
-	
+	if ((state == PlayerState::die) && (m_State != PlayerState::die))
+	{
+		m_State = state;
+		m_StateChanged->Notify(static_cast<int>(m_State));
+	}
 }
 
 void PlayerController::Die()
@@ -68,12 +84,91 @@ void PlayerController::SetObserver(Observer<int>* hud)
 	}
 }
 
-void PlayerController::Init()
+void PlayerController::Update()
+{
+	switch (m_State)
+	{
+	case dae::PlayerController::PlayerState::idle:
+	case dae::PlayerController::PlayerState::moveLeft:
+	case dae::PlayerController::PlayerState::moveDown:
+	case dae::PlayerController::PlayerState::moveRight:
+	case dae::PlayerController::PlayerState::moveUp:
+		MovementState();
+		break;
+	case dae::PlayerController::PlayerState::die:
+		DieState();
+		break;
+	default:
+		break;
+	}
+
+	m_AnimationSheet->Update();
+
+	m_CurrentMovement = glm::vec2{0,0};
+}
+
+void PlayerController::MovementState()
+{
+	PlayerState nextState{};
+	if (m_CurrentMovement.x > 0)
+	{
+		nextState = PlayerState::moveRight;
+	}
+	else if (m_CurrentMovement.x < 0)
+	{
+		nextState = PlayerState::moveLeft;
+	}
+	else if (m_CurrentMovement.y > 0)
+	{
+		nextState = PlayerState::moveUp;
+	}
+	else if (m_CurrentMovement.y < 0)
+	{
+		nextState = PlayerState::moveDown;
+	}
+	else
+	{
+		nextState = PlayerState::idle;
+		m_AnimationSheet->SetPaused(true);
+	}
+
+	
+	if (nextState != PlayerState::idle)
+	{
+		m_AnimationSheet->SetPaused(false);
+
+		if (nextState != m_State)
+		{
+			m_State = nextState;
+			m_StateChanged->Notify(static_cast<int>(m_State));
+		}
+	}
+
+	GameObject* owner{ GetOwner() };
+	glm::vec2 currentPos{owner->GetLocalPosition()};
+	owner->SetLocalPosition(currentPos + m_CurrentMovement);
+}
+
+void PlayerController::DieState()
+{
+	m_DeathTimer += Timer::GetInstance()->GetElapsedSec();
+	if (m_DeathTimer > m_AnimationSheet->GetAnimationTime(static_cast<int>(PlayerState::die)))
+	{
+		Die();
+		m_DeathTimer = 0.f;
+		m_State = PlayerState::moveLeft;
+		m_StateChanged->Notify(static_cast<int>(m_State));
+	}
+}
+
+void PlayerController::AddMovement(const glm::vec2& movement)
+{
+	m_CurrentMovement += movement;
+}
+
+void PlayerController::InitCommands()
 {
 	GameObject* owner{ GetOwner() };
-
-	m_ScoreComp = std::make_unique<ScoreComponent>(owner, m_PlayerIndex);
-	m_HealthComp = std::make_unique<HealthComponent>(owner);
 
 	std::unique_ptr<dae::Command> moveUp = std::make_unique<dae::MoveCommand>(owner, glm::vec2{0, -1}, m_Speed);
 	std::unique_ptr<dae::Command> moveDown = std::make_unique<dae::MoveCommand>(owner, glm::vec2{0, 1}, m_Speed);

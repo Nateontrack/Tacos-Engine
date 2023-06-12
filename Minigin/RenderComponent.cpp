@@ -14,7 +14,15 @@ namespace dae
 		if (m_pTexture != nullptr)
 		{
 			const auto& pos = GetOwner()->GetWorldPosition();
-			Renderer::GetInstance().RenderTexture(*m_pTexture, pos.x, pos.y);
+			if (m_HasSource)
+			{
+				Renderer::GetInstance().RenderTexture(*m_pTexture, pos, m_SrcPos, m_SrcWidth, m_SrcHeight, m_SizeFactor);
+			}
+			else
+			{
+				Renderer::GetInstance().RenderTexture(*m_pTexture, pos.x, pos.y);
+			}
+			
 		}
 	}
 
